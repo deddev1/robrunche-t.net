@@ -34,6 +34,16 @@
 
 ---
 
+## Crawl / schema recheck (2026-11-11)
+
+`verify_crawl_schema.py` against finalized `dist/`: **0 issues**.
+
+- robots.txt → `sitemap-index.xml`; Disallow `/go/` + `/forum/`
+- Sitemap: 51 URLs; pages + blog children; no forum/go/legacy/supportOf
+- JSON-LD: WebSite/Organization home; Product+on-domain Offer on 3 SKUs; BlogPosting; no FAQPage/HowTo
+- Elite AggregateRating 4.7 / 19 matches Elite reviews
+- `_headers` covers index, pages, blog, sitemap-0, sitemap.xml (no forum child)
+
 ## Maintenance
 
 - Keep one primary URL per intent (`src/data/seoIntentMap.ts` + `supportOf` on secondaries).
