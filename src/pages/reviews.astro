@@ -1,0 +1,238 @@
+---
+import '../styles/reviews.css';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { resolvePageSeo } from '../config/seo';
+import { breadcrumbSchema, collectionPageSchema } from '../utils/schema';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import { reviews, getReviewStats, getRatingBreakdown, getReviewProducts } from '../data/reviews';
+
+const seo = resolvePageSeo('/reviews/');
+const breadcrumbs = [
+  { name: 'Home', path: '/' },
+  { name: 'Reviews', path: '/reviews/' },
+];
+const stats = getReviewStats();
+const breakdown = getRatingBreakdown();
+const products = getReviewProducts();
+
+const initials = (name: string) =>
+  name
+    .split(' ')
+    .map((part) => part[0])
+    .join('')
+    .slice(0, 2)
+    .toUpperCase();
+---
+
+<BaseLayout
+  title={seo.title}
+  description={seo.description}
+  jsonLd={[
+    collectionPageSchema({
+      name: 'Buyer reviews',
+      description: seo.description,
+      url: '/reviews/',
+    }),
+    breadcrumbSchema(breadcrumbs),
+  ]}
+>
+  <div class="reviews-page">
+    <section class="reviews-hero">
+      <div class="mx-auto max-w-3xl px-5 pt-8 md:pt-10 pb-8 md:pb-10">
+        <Breadcrumbs items={breadcrumbs} />
+
+        <header class="mt-6 space-y-3">
+          <h1 id="reviews-page-title" class="text-3xl font-bold normal-case tracking-tight md:text-4xl">
+            Buyer reviews
+          </h1>
+          <p class="text-muted-foreground" data-reviews-summary>
+            {stats.average.toFixed(1)}/5 from {stats.count} reviews
+          </p>
+        </header>
+
+        <div
+          class="reviews-score reviews-score--minimal mt-6"
+          aria-label="Customer rating summary"
+          data-reviews-score
+        >
+          <div class="reviews-score__summary">
+            <p class="reviews-score__value" data-reviews-average>{stats.average.toFixed(1)}</p>
+            <div class="reviews-score__summary-meta">
+              <div
+                class="reviews-score__stars"
+                aria-hidden="true"
+                data-reviews-stars
+                data-rating={stats.average}
+              >
+                {
+                  Array.from({ length: 5 }).map((_, i) => {
+                    const fill = Math.min(1, Math.max(0, stats.average - i));
+                    return (
+                      <span class="reviews-star" style={`--fill: ${fill}`}>
+                        <span class="reviews-star__empty">★</span>
+                        <span class="reviews-star__full">★</span>
+                      </span>
+                    );
+                  })
+                }
+              </div>
+              <p class="reviews-score__meta" data-reviews-count>
+                {stats.count} verified reviews
+              </p>
+            </div>
+          </div>
+
+          <div class="reviews-score__bars" role="list" aria-label="Star rating distribution">
+            {
+              breakdown.map((row) => (
+                <div
+                  class="reviews-score__bar"
+                  role="listitem"
+                  data-star-row={row.stars}
+                  aria-label={`${row.stars} stars: ${row.count} reviews (${row.pct}%)`}
+                >
+                  <span class="reviews-score__bar-label">{row.stars}</span>
+                  <div class="reviews-score__bar-track">
+                    <div
+                      class="reviews-score__bar-fill"
+                      data-bar-fill
+                      style={`width: ${row.barPct}%`}
+                    />
+                  </div>
+                  <span class="reviews-score__bar-count" data-bar-count>{row.count}</span>
+                </div>
+              ))
+            }
+          </div>
+        </div>
+
+        <div class="reviews-filters mt-6" role="group" aria-label="Filter by product">
+          <button type="button" class="reviews-filter is-active" data-review-filter="all" aria-pressed="true">
+            All
+          </button>
+          {
+            products.map((product) => (
+              <button type="button" class="reviews-filter" data-review-filter={product} aria-pressed="false">
+                {product}
+              </button>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <section class="mx-auto max-w-3xl px-5 pb-16" aria-labelledby="reviews-list-title">
+      <h2 id="reviews-list-title" class="sr-only">Reviews</h2>
+      <ol class="reviews-feed reviews-feed--solo">
+        {
+          reviews.map((review) => (
+            <li
+              class="reviews-item"
+              data-review-card
+              data-review-product={review.product}
+              data-review-rating={review.rating}
+            >
+              <div class="reviews-item__head">
+                <span class="reviews-avatar">{initials(review.name)}</span>
+                <div class="reviews-item__identity">
+                  <p class="reviews-item__name">{review.name}</p>
+                  <p class="reviews-item__handle">@{review.handle}</p>
+                </div>
+                <div class="reviews-item__stars" aria-label={`${review.rating} out of 5 stars`}>
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <span class:list={[i < review.rating ? '' : 'is-empty']} aria-hidden="true">
+                      ★
+                    </span>
+                  ))}
+                </div>
+              </div>
+              <h3 class="reviews-item__title">{review.title}</h3>
+              <p class="reviews-item__body">{review.body}</p>
+              <div class="reviews-item__foot">
+                <a class="reviews-pill" href={review.productHref}>
+                  {review.product}
+                </a>
+                <time class="reviews-pill reviews-pill--muted" datetime={review.date}>
+                  {review.date}
+                </time>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+      <p class="reviews-empty" data-reviews-empty>No reviews for this product.</p>
+    </section>
+  </div>
+
+  <script>
+    const filters = [...document.querySelectorAll<HTMLButtonElement>('[data-review-filter]')];
+    const cards = [...document.querySelectorAll<HTMLElement>('[data-review-card]')];
+    const empty = document.querySelector<HTMLElement>('[data-reviews-empty]');
+    const summary = document.querySelector<HTMLElement>('[data-reviews-summary]');
+    const averageEl = document.querySelector<HTMLElement>('[data-reviews-average]');
+    const countEl = document.querySelector<HTMLElement>('[data-reviews-count]');
+    const starsEl = document.querySelector<HTMLElement>('[data-reviews-stars]');
+    const starRows = [...document.querySelectorAll<HTMLElement>('[data-star-row]')];
+
+    let productFilter = 'all';
+
+    const updateScore = (visibleCards: HTMLElement[]) => {
+      const ratings = visibleCards.map((card) => Number(card.dataset.reviewRating) || 0);
+      const count = ratings.length;
+      const average = count ? Math.round((ratings.reduce((a, b) => a + b, 0) / count) * 10) / 10 : 0;
+      const averageLabel = average.toFixed(1);
+
+      if (summary) summary.textContent = count ? `${averageLabel}/5 from ${count} reviews` : 'No reviews in this filter';
+      if (averageEl) averageEl.textContent = averageLabel;
+      if (countEl) {
+        countEl.textContent = count
+          ? `${count} verified review${count === 1 ? '' : 's'}`
+          : 'No reviews match this filter';
+      }
+      if (starsEl) {
+        starsEl.dataset.rating = String(average);
+        [...starsEl.querySelectorAll<HTMLElement>('.reviews-star')].forEach((star, i) => {
+          star.style.setProperty('--fill', String(Math.min(1, Math.max(0, average - i))));
+        });
+      }
+
+      const counts = [5, 4, 3, 2, 1].map((stars) => ratings.filter((r) => r === stars).length);
+      const maxCount = Math.max(1, ...counts);
+
+      starRows.forEach((row) => {
+        const stars = Number(row.dataset.starRow);
+        const rowCount = ratings.filter((r) => r === stars).length;
+        const pct = count ? Math.round((rowCount / count) * 1000) / 10 : 0;
+        const barPct = Math.round((rowCount / maxCount) * 100);
+        const fill = row.querySelector<HTMLElement>('[data-bar-fill]');
+        const countNode = row.querySelector<HTMLElement>('[data-bar-count]');
+        if (fill) fill.style.width = `${barPct}%`;
+        if (countNode) countNode.textContent = String(rowCount);
+        row.setAttribute('aria-label', `${stars} stars: ${rowCount} reviews (${pct}%)`);
+      });
+    };
+
+    const applyFilters = () => {
+      const visibleCards: HTMLElement[] = [];
+      cards.forEach((card) => {
+        const match = productFilter === 'all' || card.dataset.reviewProduct === productFilter;
+        card.hidden = !match;
+        if (match) visibleCards.push(card);
+      });
+      empty?.classList.toggle('is-visible', visibleCards.length === 0);
+      filters.forEach((btn) => {
+        const active = btn.dataset.reviewFilter === productFilter;
+        btn.classList.toggle('is-active', active);
+        btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+      });
+      updateScore(visibleCards);
+    };
+
+    filters.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        productFilter = btn.dataset.reviewFilter || 'all';
+        applyFilters();
+      });
+    });
+  </script>
+</BaseLayout>

@@ -1,0 +1,109 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import SeoRelatedLinks from '../../components/SeoRelatedLinks.astro';
+import { resolvePageSeo } from '../../config/seo';
+import { comparePages } from '../../data/comparePages';
+import { SEO_INTENT_MAP } from '../../data/seoIntentMap';
+import { breadcrumbSchema, collectionPageSchema, itemListSchema } from '../../utils/schema';
+import { Prose } from '@/components/starwind/prose';
+
+const seo = resolvePageSeo('/compare/');
+const breadcrumbs = [
+  { name: 'Home', path: '/' },
+  { name: 'Compare', path: '/compare/' },
+];
+---
+
+<BaseLayout
+  title={seo.title}
+  description={seo.description}
+  jsonLd={[
+    collectionPageSchema({
+      name: 'Rob Run cheat comparisons',
+      description: seo.description,
+      url: '/compare/',
+    }),
+    breadcrumbSchema(breadcrumbs),
+    itemListSchema(
+      comparePages.map((page) => ({
+        name: page.h1,
+        url: `/compare/${page.slug}/`,
+      })),
+    ),
+  ]}
+>
+  <section class="py-8 md:py-12">
+    <div class="mx-auto max-w-3xl px-5">
+      <Breadcrumbs items={breadcrumbs} />
+      <header class="mt-6 space-y-3">
+        <h1 class="text-3xl font-bold normal-case md:text-4xl">Compare Rob Run Cheats, Spoofer & Setup Paths</h1>
+        <p class="text-lg text-muted-foreground">
+          Decision pages for ban recovery, cheats vs utilities, and safe setup—plus the primary URL map we use so guides
+          do not cannibalize each other.
+        </p>
+      </header>
+
+      <ul class="mt-10 space-y-4">
+        {
+          comparePages.map((page) => (
+            <li class="rounded-xl border border-border p-5">
+              <a href={`/compare/${page.slug}/`} class="text-lg font-semibold hover:text-primary">
+                {page.h1}
+              </a>
+              <p class="mt-2 text-sm text-muted-foreground">{page.desc}</p>
+            </li>
+          ))
+        }
+      </ul>
+
+      <Prose class="mt-12 max-w-none text-muted-foreground">
+        <h2>One URL per search intent</h2>
+        <p>
+          Use the primary URL below for internal links and content planning. Secondary URLs deepen the topic; they should
+          not rewrite the same answer under a new slug.
+        </p>
+      </Prose>
+
+      <div class="mt-6 space-y-4">
+        {
+          SEO_INTENT_MAP.map((row) => (
+            <article class="rounded-xl border border-border bg-muted/10 p-5">
+              <h3 class="text-base font-semibold normal-case text-foreground">{row.intent}</h3>
+              <p class="mt-2 text-sm">
+                <span class="text-muted-foreground">Primary: </span>
+                <a href={row.primaryPath} class="text-primary hover:underline">
+                  {row.primaryLabel}
+                </a>
+              </p>
+              {
+                row.secondary.length > 0 && (
+                  <ul class="mt-2 list-disc space-y-1 pl-5 text-sm text-muted-foreground">
+                    {row.secondary.map((s) => (
+                      <li>
+                        <a href={s.path} class="text-primary hover:underline">
+                          {s.label}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                )
+              }
+              <p class="mt-2 text-xs text-muted-foreground">{row.rule}</p>
+            </article>
+          ))
+        }
+      </div>
+
+      <SeoRelatedLinks
+        title="Shop & status"
+        links={[
+          
+          { href: '/products/robrun-cheat/', label: 'Products hub' },
+          { href: '/blog/lite-vs-pro/', label: 'Lite vs Pro tier guide' },
+          { href: '/reviews/', label: 'Buyer reviews' },
+        ]}
+      />
+    </div>
+  </section>
+</BaseLayout>

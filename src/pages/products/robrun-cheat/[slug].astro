@@ -1,0 +1,83 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import {
+  getAllProductSlugs,
+  getProductPage,
+  isCatalogProductSlug,
+  productHub,
+} from '../../../data/products';
+import { DEFAULT_OG_IMAGE, pageTitle } from '../../../config/seo';
+import { getPageSeoEntry } from '../../../config/pageSeo';
+import { breadcrumbSchema, productSchema } from '../../../utils/schema';
+import { getProductFromPriceUsd } from '../../../data/productPricing';
+import { reviews, getReviewStats } from '../../../data/reviews';
+import ProductDetail from '../../../components/ProductDetail.astro';
+
+export function getStaticPaths() {
+  return getAllProductSlugs().map((slug) => ({ params: { slug } }));
+}
+
+const { slug } = Astro.params;
+const product = getProductPage(slug!);
+
+if (!product) {
+  return Astro.redirect(productHub.path);
+}
+
+const pagePath = `${productHub.path}${product.slug}/`;
+const seoEntry = getPageSeoEntry(pagePath);
+const metaTitle = seoEntry?.title ?? pageTitle(product.title);
+const metaDescription = seoEntry?.description ?? product.desc;
+const inCatalog = isCatalogProductSlug(product.slug);
+const productReviews = reviews.filter((r) => r.productHref.includes(`/${product.slug}/`));
+const reviewStats = getReviewStats(productReviews);
+/** Short crumb label — full SEO string stays in <title>. */
+const crumbName =
+  product.kind === 'tier'
+    ? product.name === 'Elite'
+      ? 'ROB RUN Elite'
+      : `ROB RUN ${product.name}`
+    : product.name;
+const breadcrumbs = [
+  { name: 'Home', path: '/' },
+  { name: 'Products', path: productHub.path },
+  { name: crumbName, path: pagePath },
+];
+---
+
+<BaseLayout
+  title={metaTitle}
+  description={metaDescription}
+  noindex={!inCatalog}
+  ogImage={DEFAULT_OG_IMAGE}
+  ogImageAlt={product.images[0]?.alt ?? product.title}
+  ogImageWidth={1200}
+  ogImageHeight={630}
+  jsonLd={
+    inCatalog
+      ? [
+          productSchema({
+            name: product.title,
+            description: product.desc,
+            url: pagePath,
+            // Offer URL stays on-domain (product page). Checkout CTAs remain separate hrefs.
+            offerUrl: pagePath,
+            image: product.images[0]?.src,
+            sku: product.slug,
+            priceUsd: getProductFromPriceUsd(product.slug),
+            ...(reviewStats.count > 0
+              ? {
+                  aggregateRating: {
+                    ratingValue: reviewStats.average,
+                    reviewCount: reviewStats.count,
+                  },
+                }
+              : {}),
+          }),
+          breadcrumbSchema(breadcrumbs),
+        ]
+      : [breadcrumbSchema(breadcrumbs)]
+  }
+>
+  <ProductDetail product={product} breadcrumbs={breadcrumbs} />
+</BaseLayout>

@@ -1,0 +1,16 @@
+# Static Astro site → Cloudflare Worker + assets.
+# Worker 301s www/http to https://robruncheat.net; assets serve dist/.
+# run_worker_first is required so host redirects run before index.html is served.
+name = "robruncheat-net"
+main = "src/worker.ts"
+compatibility_date = "2026-10-26"
+
+[build]
+command = "npm run build"
+
+[assets]
+directory = "./dist"
+binding = "ASSETS"
+not_found_handling = "404-page"
+html_handling = "force-trailing-slash"
+run_worker_first = true

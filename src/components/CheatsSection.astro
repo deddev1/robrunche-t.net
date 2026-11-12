@@ -1,0 +1,35 @@
+---
+import { t } from '../i18n';
+import { cheatPages } from '../data/products';
+import SectionHeader from './SectionHeader.astro';
+import CatalogCard from './CatalogCard.astro';
+import { cheatPath } from '../utils/path';
+import {
+  catalogBuyLabel,
+  catalogCardDesc,
+  catalogCardEyebrow,
+  catalogCardTitle,
+} from '../utils/catalogCardCopy';
+
+const s = t.cheats;
+---
+
+<section id="cheats" class="border-y border-border bg-muted/20 py-16 md:py-24" aria-labelledby="cheats-title">
+  <div class="mx-auto max-w-6xl px-5">
+    <SectionHeader eyebrow={s.eyebrow} title={s.title} desc={s.subtitle} titleId="cheats-title" headingLevel="h2" centered />
+
+    <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {cheatPages.map((cheat) => (
+        <CatalogCard
+          eyebrow={catalogCardEyebrow(cheat.slug, cheat.tier)}
+          title={catalogCardTitle(cheat.slug, cheat.name)}
+          href={cheatPath(cheat.slug)}
+          buyUrl={cheat.buyUrl}
+          desc={catalogCardDesc(cheat.slug, cheat.desc)}
+          buyLabel={catalogBuyLabel(cheat.slug)}
+          viewLabel="Details"
+        />
+      ))}
+    </div>
+  </div>
+</section>

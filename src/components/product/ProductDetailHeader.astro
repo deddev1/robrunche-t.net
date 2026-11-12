@@ -1,0 +1,62 @@
+---
+import type { ProductPage } from '../../data/products';
+import Icon from '../icons/Icon.astro';
+import { Button } from '@/components/starwind/button';
+import { externalLinkProps } from '../../utils/externalLink';
+import { catalogCardTitle } from '../../utils/catalogCardCopy';
+import { productHub } from '../../data/products';
+
+interface Props {
+  product: ProductPage;
+}
+
+const { product } = Astro.props;
+const buyLink = externalLinkProps(product.buyUrl);
+
+/** Short H1 for UX + mobile SEO — long SEO title stays in <title>/OG. */
+const displayName =
+  product.kind === 'tier'
+    ? product.name === 'Elite'
+      ? 'ROB RUN Elite'
+      : `ROB RUN ${product.name}`
+    : catalogCardTitle(product.slug, product.name);
+
+const badgePrimary =
+  product.slug === 'elite'
+    ? 'Rob Run Cheats'
+    : product.slug === 'hwid-spoofer'
+      ? 'HWID Spoofer'
+      : product.slug === 'ugc'
+        ? 'UGC recovery'
+        : product.badge || 'ROB RUN';
+
+const badgeSecondary =
+  product.slug === 'elite'
+    ? 'Cheats'
+    : product.category || product.tier || (product.kind === 'tier' ? 'Cheats' : 'Utility');
+
+const lead = product.desc;
+---
+
+<header class="product-detail-header">
+  <div class="product-detail-header__badges">
+    <span class="product-detail-header__badge product-detail-header__badge--primary">{badgePrimary}</span>
+    <span class="product-detail-header__badge">{badgeSecondary}</span>
+  </div>
+
+  <h1 class="product-detail-header__title">{displayName}</h1>
+
+  <p class="product-detail-header__lead">{lead}</p>
+
+  <div class="product-detail-header__cta">
+    <Button as="a" href={product.buyUrl} variant="primary" class="product-detail-header__buy" {...buyLink}>
+      Get access
+      <Icon name="arrowRight" size={16} />
+    </Button>
+    <div class="product-detail-header__links">
+      <a href="/blog/buy-guide/">Buy guide</a>
+      <a href={productHub.path}>All products</a>
+    </div>
+    <p class="product-detail-header__note">Windows PC · Partner checkout · Instant portal access</p>
+  </div>
+</header>

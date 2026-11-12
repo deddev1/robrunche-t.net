@@ -1,0 +1,15 @@
+---
+interface Props {
+  data: Record<string, unknown> | Record<string, unknown>[];
+}
+
+const { data } = Astro.props;
+/** One script per node — avoids root @graph objects without @type (validator noise). */
+const graphs = Array.isArray(data) ? data : [data];
+---
+
+{
+  graphs.map((entry) => (
+    <script type="application/ld+json" set:html={JSON.stringify(entry)} />
+  ))
+}

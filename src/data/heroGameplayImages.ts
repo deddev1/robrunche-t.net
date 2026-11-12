@@ -1,0 +1,117 @@
+/** Homepage hero gameplay slides (replaces hero video). */
+export const heroGameplayImages = [
+  {
+    src: '/images/hero/menu-visuals.webp',
+    alt: 'ROB RUN cheat menu open on Visuals with player ESP toggles and a live desert street behind the overlay',
+    caption: 'Cheat menu',
+    captionDesc: 'Visuals panel with ESP modules live in-game',
+  },
+  {
+    src: '/images/hero/menu-weapon.webp',
+    alt: 'ROB RUN cheat weapon settings panel with skin changer toggles over desert ESP boxes on vehicles',
+    caption: 'Weapon panel',
+    captionDesc: 'Weapon behavior and skin changer controls',
+  },
+  {
+    src: '/images/hero/menu-aimbot.webp',
+    alt: 'ROB RUN cheat aimbot settings menu beside ESP-highlighted players and a custom radar',
+    caption: 'Aimbot menu',
+    captionDesc: 'Aim assist options next to live ESP',
+  },
+  {
+    src: '/images/hero/esp-skeleton.webp',
+    alt: 'ROB RUN skeletal ESP and red player boxes with distance and weapon tags through indoor pillars',
+    caption: 'Skeleton ESP',
+    captionDesc: 'Players through walls with bone overlays',
+  },
+  {
+    src: '/images/hero/esp-loot.webp',
+    alt: 'ROB RUN loot ESP labels for phones, cash registers and items with radar in a sunny parking lot',
+    caption: 'Loot ESP',
+    captionDesc: 'Item tags and distances through walls',
+  },
+  {
+    src: '/images/hero/esp-vehicles.webp',
+    alt: 'ROB RUN vehicle ESP with yellow 3D boxes, nameplates and radar over cars in a western town',
+    caption: 'Vehicle ESP',
+    captionDesc: 'Car boxes, status tags and ROB RUN radar',
+  },
+  {
+    src: '/images/hero/esp-radar-town.webp',
+    alt: 'ROB RUN radar and vehicle ESP boxes on a hatchback outside a storefront in town',
+    caption: 'Radar + cars',
+    captionDesc: 'Custom radar with vehicle bounding boxes',
+  },
+  {
+    src: '/images/hero/esp-jewelry.webp',
+    alt: 'ROB RUN NPC skeleton ESP and jewelry loot tags through a glass storefront with distance readouts',
+    caption: 'Jewelry ESP',
+    captionDesc: 'Loot and NPC outlines inside a shop',
+  },
+  {
+    src: '/images/hero/esp-items.webp',
+    alt: 'ROB RUN item ESP highlighting phones, cigars and cash registers behind hedges near a parked hatchback',
+    caption: 'Item ESP',
+    captionDesc: 'World loot markers with radar overlay',
+  },
+  {
+    src: '/images/hero/esp-pharmacy.webp',
+    alt: 'ROB RUN wallhack boxes and pharmacy, phone and cash register loot tags through a patio storefront',
+    caption: 'Pharmacy loot',
+    captionDesc: 'Through-wall loot ESP on a sunny patio',
+  },
+  {
+    src: '/images/hero/esp-indoor.webp',
+    alt: 'ROB RUN indoor wallhack with cyan doorway boxes, loot tags and ROB RUN radar outside a building entrance',
+    caption: 'Indoor wallhack',
+    captionDesc: 'Doorway boxes and item ESP indoors',
+  },
+  {
+    src: '/images/hero/aimbot-bar.webp',
+    alt: 'ROB RUN aimbot FOV circle and skeleton ESP locking a robber behind the Reef Bar counter',
+    caption: 'Aimbot combat',
+    captionDesc: 'Soft aim FOV with bone ESP mid-robbery',
+  },
+  {
+    src: '/images/hero/esp-storefront.webp',
+    alt: 'ROB RUN player ESP boxes and nameplates on robbers inside a storefront viewed from a getaway hatchback',
+    caption: 'Storefront ESP',
+    captionDesc: 'Player boxes and weapon tags through glass',
+  },
+  {
+    src: '/images/hero/esp-police.webp',
+    alt: 'ROB RUN ESP boxes on a police SUV and skeleton overlay on a nearby cop beside a ROB RUN hatchback',
+    caption: 'Police ESP',
+    captionDesc: 'Cop and vehicle tracking in an urban chase',
+  },
+  {
+    src: '/images/hero/esp-players-indoor.webp',
+    alt: 'ROB RUN red skeleton ESP on multiple criminals with distance and armor tags in a vaulted indoor plaza',
+    caption: 'Multi-player ESP',
+    captionDesc: 'Team wallhack with roles and weapons',
+  },
+  {
+    src: '/images/hero/esp-heist.webp',
+    alt: 'ROB RUN heist ESP showing robber outlines, weapons and distances through a blue business building doorway',
+    caption: 'Heist ESP',
+    captionDesc: 'Robber wallhack during a store robbery',
+  },
+  {
+    src: '/images/hero/esp-coast-cops.webp',
+    alt: 'ROB RUN aimbot FOV and ESP boxes on police cars along a sunny coastal road with a Ferris wheel behind',
+    caption: 'Coast cops',
+    captionDesc: 'Police vehicle ESP near the boardwalk',
+  },
+  {
+    src: '/images/hero/esp-parking.webp',
+    alt: 'ROB RUN ESP boxes and skeletons on players and cars in a desert parking lot with a central aim reticle',
+    caption: 'Parking ESP',
+    captionDesc: 'Multi-target boxes and bone ESP outdoors',
+  },
+  {
+    src: '/images/hero/esp-plaza-loot.webp',
+    alt: 'ROB RUN green loot ESP boxes through a plaza building wall with cash and security item labels',
+    caption: 'Plaza loot',
+    captionDesc: 'Through-wall loot and player list overlay',
+  },
+] as const;

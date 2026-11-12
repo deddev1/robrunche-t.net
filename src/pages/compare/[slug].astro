@@ -1,0 +1,114 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import SeoRelatedLinks from '../../components/SeoRelatedLinks.astro';
+import { getAllCompareSlugs, getComparePage } from '../../data/comparePages';
+import { pageTitle } from '../../config/seo';
+import { getPageSeoEntry } from '../../config/pageSeo';
+import { breadcrumbSchema, webPageSchema } from '../../utils/schema';
+import { Button } from '@/components/starwind/button';
+import { Prose } from '@/components/starwind/prose';
+
+export function getStaticPaths() {
+  return getAllCompareSlugs().map((slug) => ({ params: { slug } }));
+}
+
+const { slug } = Astro.params;
+const page = getComparePage(slug!);
+if (!page) {
+  return Astro.redirect('/compare/');
+}
+
+const path = `/compare/${page.slug}/`;
+const seoEntry = getPageSeoEntry(path);
+const title = seoEntry?.title ?? pageTitle(page.title.replace(/ \| .*$/, ''));
+const description = seoEntry?.description ?? page.desc;
+const breadcrumbs = [
+  { name: 'Home', path: '/' },
+  { name: 'Compare', path: '/compare/' },
+  { name: page.h1, path },
+];
+
+function renderText(text: string) {
+  // Allow simple markdown-ish [label](/path/) links in prose strings.
+  const parts: Array<string | { href: string; label: string }> = [];
+  const re = /\[([^\]]+)\]\(([^)]+)\)/g;
+  let last = 0;
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(text))) {
+    if (m.index > last) parts.push(text.slice(last, m.index));
+    parts.push({ label: m[1], href: m[2] });
+    last = m.index + m[0].length;
+  }
+  if (last < text.length) parts.push(text.slice(last));
+  return parts;
+}
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  jsonLd={[
+    webPageSchema({
+      name: page.h1,
+      description,
+      url: path,
+    }),
+    breadcrumbSchema(breadcrumbs),
+  ]}
+>
+  <article class="py-8 md:py-12">
+    <div class="mx-auto max-w-3xl px-5">
+      <Breadcrumbs items={breadcrumbs} />
+      <header class="mt-6 space-y-3">
+        <h1 class="text-3xl font-bold normal-case md:text-4xl">{page.h1}</h1>
+        <p class="text-lg text-muted-foreground">{page.desc}</p>
+        <Button as="a" href={page.primaryCta.href} variant="primary" size="sm">
+          {page.primaryCta.label}
+        </Button>
+      </header>
+
+      <Prose class="mt-10 max-w-none text-muted-foreground">
+        {
+          page.body.map((block) => {
+            if (block.type === 'h2') return <h2>{block.text}</h2>;
+            if (block.type === 'ul') {
+              return (
+                <ul>
+                  {block.items.map((item) => (
+                    <li>
+                      {renderText(item).map((part) =>
+                        typeof part === 'string' ? (
+                          part
+                        ) : (
+                          <a href={part.href}>{part.label}</a>
+                        ),
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              );
+            }
+            return (
+              <p>
+                {renderText(block.text).map((part) =>
+                  typeof part === 'string' ? part : <a href={part.href}>{part.label}</a>,
+                )}
+              </p>
+            );
+          })
+        }
+      </Prose>
+
+      <SeoRelatedLinks
+        title="More comparisons"
+        links={[
+          { href: '/compare/', label: 'Compare hub & intent map' },
+          
+          { href: '/products/robrun-cheat/', label: 'Products hub' },
+          { href: '/blog/are-robrun-cheats-safe/', label: 'Safety guide' },
+        ]}
+      />
+    </div>
+  </article>
+</BaseLayout>

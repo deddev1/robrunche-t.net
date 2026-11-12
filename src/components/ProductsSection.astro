@@ -1,0 +1,32 @@
+---
+import '../styles/product-cheat-page.css';
+import { t } from '../i18n';
+import { shopCards } from '../data/products';
+import SectionHeader from './SectionHeader.astro';
+import CatalogCard from './CatalogCard.astro';
+
+const s = t.products;
+---
+
+<section id="products" class="py-16 md:py-24" aria-labelledby="products-title">
+  <div class="mx-auto max-w-6xl px-5">
+    <SectionHeader eyebrow={s.eyebrow} title={s.title} desc={s.subtitle} titleId="products-title" headingLevel="h2" />
+
+    <div class="catalog-grid mt-10">
+      {
+        shopCards.map((card) => (
+          <CatalogCard
+            eyebrow={card.eyebrow}
+            title={card.title}
+            href={card.href}
+            buyUrl={card.buyUrl}
+            desc={card.desc}
+            buyLabel={card.buyLabel}
+            accent={card.accent}
+            viewLabel="Details"
+          />
+        ))
+      }
+    </div>
+  </div>
+</section>

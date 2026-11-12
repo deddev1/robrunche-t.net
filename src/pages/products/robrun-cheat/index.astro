@@ -1,0 +1,73 @@
+---
+import '../../../styles/product-cheat-page.css';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { t } from '../../../i18n';
+import { catalogProducts, productHub, shopCards } from '../../../data/products';
+import { resolvePageSeo } from '../../../config/seo';
+import { breadcrumbSchema, collectionPageSchema, itemListSchema } from '../../../utils/schema';
+import Breadcrumbs from '../../../components/Breadcrumbs.astro';
+import CatalogCard from '../../../components/CatalogCard.astro';
+import FullToolkitSection from '../../../components/FullToolkitSection.astro';
+import { productPath } from '../../../utils/path';
+import SeoRelatedLinks from '../../../components/SeoRelatedLinks.astro';
+
+const seo = resolvePageSeo('/products/robrun-cheat/');
+const breadcrumbs = [
+  { name: 'Home', path: '/' },
+  { name: 'Products', path: productHub.path },
+];
+---
+
+<BaseLayout
+  title={seo.title}
+  description={seo.description}
+  jsonLd={[
+    collectionPageSchema({
+      name: productHub.title,
+      description: productHub.description,
+      url: productHub.path,
+    }),
+    breadcrumbSchema(breadcrumbs),
+    itemListSchema(
+      catalogProducts.map((product) => ({
+        name: product.title,
+        url: productPath(product.slug),
+      })),
+    ),
+  ]}
+>
+  <section class="py-8 md:py-12">
+    <div class="mx-auto max-w-6xl px-5">
+      <Breadcrumbs items={breadcrumbs} />
+
+      <div class="mt-6 max-w-3xl space-y-3">
+        <h1 class="text-3xl font-bold normal-case md:text-4xl">{t.products.title}</h1>
+        <p class="text-lg text-muted-foreground">{t.products.subtitle}</p>
+        <p class="max-w-2xl text-sm text-muted-foreground/90">
+          Lite & Pro share the same checkout · Spoofer after a hardware flag · UGC for Steam recovery
+        </p>
+      </div>
+
+      <div class="catalog-grid mt-10">
+        {shopCards.map((card) => (
+          <CatalogCard
+            eyebrow={card.eyebrow}
+            title={card.title}
+            href={card.href}
+            buyUrl={card.buyUrl}
+            desc={card.desc}
+            buyLabel={card.buyLabel}
+            accent={card.accent}
+            viewLabel="Details"
+          />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <FullToolkitSection />
+
+  <div class="mx-auto max-w-6xl px-5 pb-16">
+    <SeoRelatedLinks title="More Rob Run cheat resources" />
+  </div>
+</BaseLayout>

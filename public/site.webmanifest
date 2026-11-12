@@ -1,0 +1,33 @@
+{
+  "name": "Rob Run Cheat",
+  "short_name": "Rob Run Cheat",
+  "description": "Rob Run cheats with player ESP, opponent radar, soft aim, aim assist and stream-proof overlays for Windows on Steam.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#0a0d10",
+  "theme_color": "#ce422b",
+  "lang": "en-US",
+  "icons": [
+    {
+      "src": "/android-chrome-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/android-chrome-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon-32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    }
+  ]
+}

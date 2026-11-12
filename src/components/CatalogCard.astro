@@ -1,0 +1,75 @@
+---
+import '../styles/product-cheat-page.css';
+import Icon from './icons/Icon.astro';
+import { Button } from '@/components/starwind/button';
+import { externalLinkProps } from '../utils/externalLink';
+
+interface Props {
+  title: string;
+  href: string;
+  buyUrl: string;
+  desc?: string;
+  eyebrow?: string;
+  buyLabel?: string;
+  viewLabel?: string;
+  accent?: 'popular' | 'utility';
+  class?: string;
+}
+
+const {
+  title,
+  href,
+  buyUrl,
+  desc,
+  eyebrow,
+  buyLabel = 'Get access',
+  viewLabel = 'Details',
+  accent,
+  class: className,
+} = Astro.props;
+
+const buyLink = externalLinkProps(buyUrl);
+---
+
+<article
+  class:list={[
+    'catalog-card group',
+    accent === 'popular' && 'catalog-card--popular',
+    accent === 'utility' && 'catalog-card--utility',
+    className,
+  ]}
+>
+  <div class="catalog-card__top">
+    {
+      eyebrow && (
+        <div class="catalog-card__meta">
+          <p class="catalog-card__eyebrow">{eyebrow}</p>
+          {accent === 'popular' && <span class="catalog-card__chip">Popular</span>}
+        </div>
+      )
+    }
+    <h3 class="catalog-card__title">
+      <a href={href} class="catalog-card__title-link">{title}</a>
+    </h3>
+    {desc && <p class="catalog-card__desc">{desc}</p>}
+  </div>
+
+  <div class="catalog-card__footer">
+    <Button
+      as="a"
+      href={buyUrl}
+      variant="primary"
+      size="sm"
+      class="catalog-card__buy"
+      aria-label={buyLabel}
+      {...buyLink}
+    >
+      <span>{buyLabel}</span>
+      <Icon name="arrowRight" size={16} class="shrink-0" />
+    </Button>
+    <a href={href} class="catalog-card__details">
+      {viewLabel}
+      <Icon name="arrowRight" size={13} class="shrink-0 opacity-60" />
+    </a>
+  </div>
+</article>

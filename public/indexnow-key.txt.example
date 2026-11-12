@@ -1,0 +1,4 @@
+# Rename this file to {INDEXNOW_KEY}.txt (same value as INDEXNOW_KEY in .env)
+# and place it at the site root so IndexNow can verify ownership.
+# Example: if INDEXNOW_KEY=abc123 then publish /abc123.txt containing: abc123
+placeholder-replace-with-your-indexnow-key

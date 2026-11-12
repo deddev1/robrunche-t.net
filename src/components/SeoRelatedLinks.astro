@@ -1,0 +1,50 @@
+---
+import { ROUTES } from '../utils/path';
+import { checkoutPath } from '../config/checkout';
+import { externalLinkProps } from '../utils/externalLink';
+import { Button } from '@/components/starwind/button';
+
+interface LinkItem {
+  href: string;
+  label: string;
+}
+
+interface Props {
+  title?: string;
+  links?: LinkItem[];
+}
+
+const defaultLinks: LinkItem[] = [
+  { href: ROUTES.products, label: 'Open products hub for all tiers' },
+  { href: ROUTES.compare, label: 'Compare cheats, spoofer and setup' },
+  { href: '/blog/buy-guide/', label: 'How to buy Rob Run cheats' },
+  { href: '/blog/lite-vs-pro/', label: 'Compare Lite vs Pro tiers' },
+  { href: '/blog/patch-day/', label: 'ROB RUN patch-day checklist' },
+  { href: '/products/robrun-cheat/elite/', label: 'Purchase Elite Open World suite' },
+  { href: '/products/robrun-cheat/utilities/', label: 'HWID UGC unlock utility table' },
+  { href: ROUTES.blog, label: 'Read checkout and tier guides' },
+  { href: ROUTES.faq, label: 'Open buying FAQ answers' },
+  { href: ROUTES.reviews, label: 'See product review scores' },
+  { href: '/about/', label: 'About the Rob Run Cheat store' },
+  { href: '/support/', label: 'Open Discord support tickets' },
+  { href: '/privacy/', label: 'Read the privacy policy' },
+];
+
+const { title = 'Shop Rob Run cheats & guides', links = defaultLinks } = Astro.props;
+const checkout = checkoutPath('robrun');
+const checkoutAttrs = externalLinkProps(checkout);
+---
+
+<aside class="mt-12 rounded-xl border border-border bg-muted/20 p-6" aria-labelledby="seo-related-links-title">
+  <p id="seo-related-links-title" class="text-lg font-semibold normal-case text-foreground">{title}</p>
+  <ul class="mt-4 grid gap-2 sm:grid-cols-2">
+    {links.map((item) => (
+      <li>
+        <a href={item.href} class="text-sm text-primary hover:underline">{item.label}</a>
+      </li>
+    ))}
+  </ul>
+  <div class="mt-6">
+    <Button as="a" href={checkout} variant="primary" size="sm" {...checkoutAttrs}>Go to secure checkout</Button>
+  </div>
+</aside>
